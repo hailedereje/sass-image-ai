@@ -17,15 +17,18 @@ export const connectToDatabase = async () => {
     if(cached.connection) {
         return cached.connection;
     }
-
+    
     if(!MONGODB_URL) {
         throw new Error('MONGODB_URL is not defined');
     }
 
-    cached.promise = cached.promise || mongoose.connect(MONGODB_URL, {
-        dbName: 'imageai',bufferCommands:false
-    })
-
-    cached.connection = await cached.promise;
-    return cached.connection;
+    try {
+        cached.promise = cached.promise || mongoose.connect(MONGODB_URL, {dbName: 'imageai',bufferCommands:false })
+        cached.connection = await cached.promise;
+        return cached.connection;
+    } catch (error) {
+        console.error('MongoDB connection error:');
+    }
+    
+    
 }
